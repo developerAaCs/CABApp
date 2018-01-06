@@ -10,15 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import aacs.com.np.cabapp.R;
-import aacs.com.np.cabapp.SQLite.BackgroundTask;
-import aacs.com.np.cabapp.SQLite.DatabaseOperations;
-import aacs.com.np.cabapp.SQLite.Notification;
-import aacs.com.np.cabapp.SQLite.NotificationAdapter;
+import aacs.com.np.cabapp.RealTimeData.MyDataSet;
+import aacs.com.np.cabapp.RealTimeData.NotificationAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,10 +31,12 @@ import aacs.com.np.cabapp.SQLite.NotificationAdapter;
 public class News extends Fragment {
 
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    //BackgroundTask backgroundTask;
-    List<Notification> notifications= new ArrayList<>();
+    List<MyDataSet> notifications = new ArrayList<>();
+    FirebaseDatabase FDB;
+    DatabaseReference DBR;
+
     public News() {
         // Required empty public constructor
     }
@@ -39,27 +46,52 @@ public class News extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView= inflater.inflate(R.layout.fragment_news,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        layoutManager= new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
-        //backgroundTask= new BackgroundTask(getContext());
-        //backgroundTask.execute();
-       /* DatabaseOperations databaseOperations= new DatabaseOperations(getContext());
-        SQLiteDatabase sqLiteDatabase= databaseOperations.getReadableDatabase();
-
-        Cursor cursor= databaseOperations.getInformation(sqLiteDatabase);
-        cursor.moveToLast();
-        do {
-            Notification notification= new Notification(cursor.getString(0),cursor.getString(1));
-            notifications.add(notification);
 
 
-        }while (cursor.moveToPrevious());
-        databaseOperations.close();*/
-        adapter= new NotificationAdapter(getContext(),notifications);
-        recyclerView.setAdapter(adapter);
+        Toast.makeText(getContext(),"Fetching recent notices...... Please wait",Toast.LENGTH_SHORT).show();
+        //Firebase operations
+        FDB = FirebaseDatabase.getInstance();
+        DBR = FDB.getReference("Notice");
+        DBR.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                MyDataSet data= new MyDataSet();
+                data= dataSnapshot.getValue(MyDataSet.class);
+                notifications.add(data);
+                adapter = new NotificationAdapter(getContext(), notifications);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         return rootView;
-    }
 
+
+    }
 }

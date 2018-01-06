@@ -13,7 +13,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import aacs.com.np.cabapp.Fragments.News;
-import aacs.com.np.cabapp.SQLite.DatabaseOperations;
 
 /**
  * Created by Dell on 6/12/2017.
@@ -37,8 +36,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0,notificationBuilder.build());
 
         //Store in SQLite
-        DatabaseOperations  DB = new DatabaseOperations(this);
-        DB.putInformation(DB,remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+        //DatabaseOperations  DB = new DatabaseOperations(this);
+        //DB.putInformation(DB,remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
 
 
     }

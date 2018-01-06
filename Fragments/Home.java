@@ -46,6 +46,7 @@ public class Home extends Fragment {
     boolean isOpen = false;
     TextView about_text;
     ImageView about_image;
+    TextView button_message;
     ViewPager mPager;
     int currentPage=0;
     private static final Integer[] XMEN={R.drawable.building,R.drawable.classroom,R.drawable.lab};
@@ -66,8 +67,40 @@ public class Home extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        //about_text= (TextView) view.findViewById(R.id.about_cab);
-       // about_image= (ImageView) view.findViewById(R.id.about_image);
+        about_text= (TextView) view.findViewById(R.id.about_cab);
+        about_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AboutCAB aboutCAB = new AboutCAB();
+                // consider using Java coding conventions (upper first char class names!!!)
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.fragment_container, aboutCAB);
+                transaction.addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+
+            }
+        });
+        button_message= (TextView) view.findViewById(R.id.message);
+        button_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message_from_principal message = new Message_from_principal();
+                // consider using Java coding conventions (upper first char class names!!!)
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.fragment_container, message);
+                transaction.addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+            }
+        });
+        // about_image= (ImageView) view.findViewById(R.id.about_image);
         //Image slider
 
 

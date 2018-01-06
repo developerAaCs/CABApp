@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.fragment_container, newFragment);
                 // Commit the transaction
                 transaction.commit();
+                setTitle("iLearn");
+
 
             }else {
                 ILearn fragment = new ILearn();
@@ -147,11 +149,27 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_news) {
-            News fragment= new News();
-            FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-            setTitle("Notice");
+            if (networkInfo == null || !networkInfo.isConnected()) {
+
+                No_internet newFragment = new No_internet();
+                // consider using Java coding conventions (upper first char class names!!!)
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.fragment_container, newFragment);
+
+                // Commit the transaction
+                transaction.commit();
+                setTitle("Notices");
+
+            }else {
+                News fragment = new News();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.commit();
+                setTitle("Notices");
+            }
         } else if (id == R.id.nav_attendance) {
             Attendance fragment= new Attendance();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
@@ -173,6 +191,8 @@ public class MainActivity extends AppCompatActivity
 
                 // Commit the transaction
                 transaction.commit();
+                setTitle("Website");
+
             }else {
                 Website fragment = new Website();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
